@@ -1,10 +1,9 @@
-import credentials, paigoogle
+import credentials
 import functions_framework
 from flask import jsonify
 from datetime import datetime, timezone
 import os
-
-from paigoogle import new_business
+from paigoogle import *
 
 SHARED_SECRET = os.environ.get("SHARED_SECRET")
 
@@ -26,16 +25,16 @@ def hello_pubsub(request):
 
     action = request_json["action"]
 
-    if action == "new_business":
+    if action == "new_patient":
         patient_id = request_json.get("patient_id")
         if not patient_id:
             return jsonify({"error": "Missing 'patient_id' in request body"}), 400
 
-        business = request_json.get("business")
-        if not business:
-            return jsonify({"error": "Missing 'business' in request body"}), 400
+        patient = request_json.get("business")
+        if not patient:
+            return jsonify({"error": "Missing 'patient' in request body"}), 400
 
-        result = paigoogle.new_business(patient_id, business)
+        result = paigoogle.new_patient(patient_id)
         return result
 
     else:
@@ -44,4 +43,4 @@ def hello_pubsub(request):
 
 
 if __name__ == '__main__':
-    print(new_business('2041125588483179604', '1811529042298406445'))
+    print(new_patient('60014768'))
