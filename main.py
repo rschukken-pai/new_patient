@@ -1,11 +1,10 @@
 import credentials
 import functions_framework
 from flask import jsonify
-from datetime import datetime, timezone
 import os
 from paigoogle import *
 
-SHARED_SECRET = os.environ.get("SHARED_SECRET")
+SHARED_SECRET = credentials.API_KEY
 
 
 @functions_framework.http
@@ -14,9 +13,6 @@ def hello_pubsub(request):
     incoming_secret = request.headers.get("X-API-Key")
     if incoming_secret != SHARED_SECRET:
         return jsonify({"error": "Unauthorized"}), 401
-
-    print("Hello_pubsub")
-    currentTime = datetime.now(timezone.utc).replace(tzinfo=None)
 
     request_json = request.get_json(silent=True)
 
@@ -30,12 +26,8 @@ def hello_pubsub(request):
         if not patient_id:
             return jsonify({"error": "Missing 'patient_id' in request body"}), 400
 
-        patient = request_json.get("business")
-        if not patient:
-            return jsonify({"error": "Missing 'patient' in request body"}), 400
-
-        result = paigoogle.new_patient(patient_id)
-        return result
+        result = new_patient(patient_id)
+        return jsonify({"status": "new patient processed", "result": result}), 200
 
     else:
         print("Wrong input received")
