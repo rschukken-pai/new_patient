@@ -7,4 +7,4 @@ gcloud functions deploy new_patient \
   --entry-point=hello_pubsub \
   --trigger-http \
   --allow-unauthenticated \
-  --set-secrets="SHARED_SECRET=shared-api-secret-2:latest"
+  --set-secrets="SHARED_SECRET=new_patient:latest"
